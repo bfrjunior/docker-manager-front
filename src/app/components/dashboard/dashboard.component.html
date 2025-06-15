@@ -1,0 +1,101 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Containers</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-3">
+          <h6>Running: {{ runningContainers }}</h6>
+          <h6>Stopped: {{ stoppedContainers }}</h6>
+        </div>
+        <a routerLink="/containers" class="btn btn-outline-primary">Manage Containers</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Images</h5>
+      </div>
+      <div class="card-body">
+        <h6 class="mb-3">Total Images: {{ totalImages }}</h6>
+        <a routerLink="/images" class="btn btn-outline-success">Manage Images</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Docker Containers</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Names</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="containers.length === 0">
+                <td colspan="5" class="text-center">No containers found</td>
+              </tr>
+              <tr *ngFor="let container of containers">
+                <td>
+                  <a [routerLink]="['/containers', container.Id]">{{ container.Id.substring(0, 12) }}</a>
+                </td>
+                <td>{{ container.Image }}</td>
+                <td>{{ container.Names.join(', ') }}</td>
+                <td [ngClass]="{'text-success': container.State === 'running', 'text-danger': container.State !== 'running'}">
+                  {{ container.State || container.Status }}
+                </td>
+                <td>{{ formatDate(container.Created) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="imageName" class="form-label">Create Container from Image</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="imageName" [(ngModel)]="newContainerImage" placeholder="Enter image name">
+                <button class="btn btn-primary" (click)="createNewContainer()">Create</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="filterName" class="form-label">Filter Images</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="filterName" [(ngModel)]="imageFilter" placeholder="Enter filter name">
+                <button class="btn btn-success" (click)="filterImagesByName()">Filter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

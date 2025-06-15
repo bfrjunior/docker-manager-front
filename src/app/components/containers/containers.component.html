@@ -1,0 +1,78 @@
+<div class="card">
+  <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Docker Containers</h5>
+    <div>
+      <button class="btn btn-sm btn-light me-2" (click)="loadContainers()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="showAllContainers" [(ngModel)]="showAll" (change)="loadContainers()">
+        <label class="form-check-label text-white" for="showAllContainers">Show All</label>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Names</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="containers.length === 0">
+            <td colspan="6" class="text-center">No containers found</td>
+          </tr>
+          <tr *ngFor="let container of containers">
+            <td>
+              <a [routerLink]="['/containers', container.Id]">{{ container.Id.substring(0, 12) }}</a>
+            </td>
+            <td>{{ container.Image }}</td>
+            <td>{{ container.Names.join(', ') }}</td>
+            <td [ngClass]="{'container-status-running': container.State === 'running', 'container-status-stopped': container.State !== 'running'}">
+              {{ container.State || container.Status }}
+            </td>
+            <td>{{ formatDate(container.Created) }}</td>
+            <td class="action-buttons">
+              <button *ngIf="container.State !== 'running'" class="btn btn-sm btn-success" (click)="startContainer(container.Id)">
+                Start
+              </button>
+              <button *ngIf="container.State === 'running'" class="btn btn-sm btn-warning" (click)="stopContainer(container.Id)">
+                Stop
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteContainer(container.Id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header bg-success text-white">
+    <h5 class="mb-0">Create New Container</h5>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="newContainerImage" class="form-label">Image Name</label>
+          <input type="text" class="form-control" id="newContainerImage" [(ngModel)]="newContainerImage" placeholder="Enter image name (e.g. nginx:latest)">
+        </div>
+      </div>
+      <div class="col-md-6 d-flex align-items-end">
+        <button class="btn btn-primary" (click)="createContainer()">
+          Create Container
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
